@@ -2,6 +2,8 @@
 let myPage = 1;
 const myAppElement = document.getElementById('myApp');
 
+
+
 // entry point
 loadingScreen();
 setUpShowAllButton();
@@ -76,9 +78,12 @@ function loadingScreen() {
 function setUpShowAllButton() {
 
     let showAllButton = document.getElementById('showAllButton');
+
     showAllButton.addEventListener('click', (e) => {
+
         myPage = 1;
         fetchAllCharacters();
+
     });
 }
 
@@ -108,9 +113,7 @@ function setupSearchForm() {
 
 
 
-function fetchCaracterPage() {
-    console.log('fetchCaracterPage');
-}
+
 
 
 
@@ -169,27 +172,37 @@ function fetchAllCharacters() {
 
     let URI = `https://api.disneyapi.dev/characters?page=${myPage}`
 
-    fetch(URI).then((response) => {
-        //console.log(response);
 
-        if (response.ok) {
-            return response.json();
-        } else {
-            alert("api error du får lige mickey mouse");
-            fetchOneCharacter(4703);
 
-        }
 
-    }).then((data) => {
+    fetch(URI).then(
+        (response) => {
 
-        console.log(data);
+            console.log(response);
 
-        showAll(data.data);
 
-    }).catch((err) => {
-        console.error(err.message);
+            if (response.ok) {
 
-    });
+                return response.json();
+
+            } else {
+
+                alert("api error du får lige mickey mouse");
+                fetchOneCharacter(4703);
+
+            }
+
+        }).then((data) => {
+
+            console.log(data);
+
+
+            showAll(data.data);
+
+        }).catch((err) => {
+            console.error(err.message);
+
+        });
 
 
 }
@@ -197,41 +210,71 @@ function fetchAllCharacters() {
 function showAll(myData) {
 
     myAppElement.innerHTML = "";
-    makePageButtons();
 
     let myHTML = '';
 
-    myData.map((myCharacter) => {
-        myHTML += `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}"></br>`;
+    myData.map(
+        (myCharacter) => {
+            myHTML += `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}"></br>`;
 
-    });
+        }
+    );
 
     myAppElement.innerHTML += myHTML;
+
     makePageButtons();
+
 }
+
+
+
 
 function makePageButtons() {
 
+
+    let myNav = document.createElement('nav');
+
     let prevButton = document.createElement('button');
     prevButton.innerText = 'prev';
+
+
     prevButton.addEventListener('click', (e) => {
         myPage--;
+
         if (myPage < 1) {
             myPage = 1;
         }
-        fetchAllCharacters();
-    });
+        else {
+
+            fetchAllCharacters();
+        }
+
+    }
+    );
+
 
     let nextButton = document.createElement('button');
     nextButton.innerText = 'next';
+
     nextButton.addEventListener('click', (e) => {
+
         myPage++;
-        if (myPage >= 149) {
+        if (myPage > 149) {
             myPage = 149;
         }
-        fetchAllCharacters();
+        else {
+
+            fetchAllCharacters();
+        }
+
+
     });
-    myAppElement.appendChild(prevButton);
-    myAppElement.appendChild(nextButton);
+
+
+    myNav.appendChild(prevButton);
+    myNav.appendChild(nextButton);
+
+    myAppElement.appendChild(myNav);
+
 
 }

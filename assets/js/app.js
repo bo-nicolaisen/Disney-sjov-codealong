@@ -12,7 +12,8 @@ fetchOneCharacter(4703);
 
 
 
-function fetchOneCharacter(myId) {
+function fetchOneCharacter(myId, mySender) {
+
     let URI = `https://api.disneyapi.dev/characters/${myId}`
 
     fetch(URI).then((response) => {
@@ -31,7 +32,9 @@ function fetchOneCharacter(myId) {
     }).then((data) => {
 
         //console.log(data);
-        showCharacter(data);
+        showCharacter(data, mySender);
+
+
 
     }).catch((err) => {
 
@@ -45,7 +48,10 @@ function fetchOneCharacter(myId) {
 
 }
 
-function showCharacter(myData) {
+function showCharacter(myData, mySender) {
+
+
+
     //  myAppElement
     console.log(myData.name);
 
@@ -66,6 +72,29 @@ function showCharacter(myData) {
 
     let myHTML = `<h2>${myData.name}</h2><img src="${myData.imageUrl}"><p>${myFilms}</p><p>${myTvShows}</p>`;
     myAppElement.innerHTML = myHTML;
+
+
+    switch (mySender) {
+        case "showAll":
+            let myReturnButton = document.createElement('button');
+            myReturnButton.innerText = 'tilbage';
+
+            myReturnButton.addEventListener('click', (e) => {
+                fetchAllCharacters();
+
+            });
+            myAppElement.appendChild(myReturnButton);
+            break;
+
+        case "searchResult":
+
+            break;
+
+        default:
+
+            break;
+    }
+
 
 }
 
@@ -211,16 +240,37 @@ function showAll(myData) {
 
     myAppElement.innerHTML = "";
 
-    let myHTML = '';
+
 
     myData.map(
-        (myCharacter) => {
-            myHTML += `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}"></br>`;
 
+        (myCharacter) => {
+
+            console.log('id: ' + myCharacter._id);
+
+            let myCard = document.createElement('article');
+
+            let myHTML = `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}">`;
+            myCard.innerHTML = myHTML;
+
+            myCard.addEventListener('click', (e) => {
+
+                //console.log('klik: ' + e.currentTarget);
+                //console.log('id: ' + myCharacter._id);
+                fetchOneCharacter(myCharacter._id, "showAll");
+
+
+            });
+
+
+
+            myAppElement.appendChild(myCard);
         }
     );
 
-    myAppElement.innerHTML += myHTML;
+
+
+
 
     makePageButtons();
 

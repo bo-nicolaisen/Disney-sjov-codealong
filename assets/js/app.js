@@ -1,5 +1,6 @@
 //
 let myPage = 1;
+let searchString = "";
 const myAppElement = document.getElementById('myApp');
 
 
@@ -87,6 +88,15 @@ function showCharacter(myData, mySender) {
             break;
 
         case "searchResult":
+            let myreturnSearch = document.createElement('button');
+            myreturnSearch.innerText = 'tilbage';
+
+            myreturnSearch.addEventListener('click', (e) => {
+                fetchSearch(searchString);
+
+            });
+            myAppElement.appendChild(myreturnSearch);
+
 
             break;
 
@@ -130,6 +140,8 @@ function setupSearchForm() {
 
         if (myValue) {
             console.log(' vi har string ' + myValue);
+
+            searchString = myValue;
             fetchSearch(myValue);
         }
         else {
@@ -185,14 +197,38 @@ function fetchSearch(myName) {
 
 function showSearch(myData) {
 
-    let myHTML = '';
 
-    myData.map((myCharacter) => {
-        myHTML += `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}"></br>`;
+    myAppElement.innerHTML = "";
 
-    });
 
-    myAppElement.innerHTML = myHTML;
+
+    myData.map(
+
+        (myCharacter) => {
+
+            //console.log('id: ' + myCharacter._id);
+
+            let myCard = document.createElement('article');
+
+            let myHTML = `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}">`;
+            myCard.innerHTML = myHTML;
+
+            myCard.addEventListener('click', (e) => {
+
+                //console.log('klik: ' + e.currentTarget);
+                //console.log('id: ' + myCharacter._id);
+                fetchOneCharacter(myCharacter._id, "searchResult");
+
+
+            });
+
+
+
+            myAppElement.appendChild(myCard);
+        }
+    );
+
+
 }
 
 
@@ -236,17 +272,20 @@ function fetchAllCharacters() {
 
 }
 
+
+
 function showAll(myData) {
 
     myAppElement.innerHTML = "";
 
+    makePageButtons();
 
 
     myData.map(
 
         (myCharacter) => {
 
-            console.log('id: ' + myCharacter._id);
+            //console.log('id: ' + myCharacter._id);
 
             let myCard = document.createElement('article');
 
